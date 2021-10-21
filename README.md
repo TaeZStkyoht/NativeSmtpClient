@@ -9,3 +9,8 @@ cmake [-DBUILD_EXAMPLES=NO] ..
 make install
 ```
 If you are on Linux you may also need `ldconfig /usr/local/lib/`
+# Uninstallation
+In the build directory:
+```
+xargs rm < install_manifest.txt
+```
