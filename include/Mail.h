@@ -3,11 +3,12 @@
 #include "MailAddress.h"
 
 #include <vector>
+#include <optional>
 
 namespace NativeSmtpClient {
 	class Mail {
 	public:
-		Mail(MailAddress sender, const MailAddress& recipient);
+		Mail(MailAddress sender, const std::optional<MailAddress>& recipient = std::nullopt);
 
 		void Recipients(const std::vector<MailAddress>& recipients);
 		void Ccs(const std::vector<MailAddress>& ccs);

@@ -6,8 +6,9 @@ using namespace std;
 
 using namespace NativeSmtpClient;
 
-Mail::Mail(MailAddress sender, const MailAddress& recipient) : _sender(move(sender)) {
-	FillMailAddress(_recipients, recipient);
+Mail::Mail(MailAddress sender, const optional<MailAddress>& recipient) : _sender(move(sender)) {
+	if (recipient)
+		FillMailAddress(_recipients, *recipient);
 }
 
 void Mail::Recipients(const vector<MailAddress>& recipients) {

@@ -2,17 +2,16 @@
 
 #include <iostream>
 #include <future>
-#include <chrono>
+#include <algorithm>
 
 using namespace std;
-using namespace chrono;
 
 using namespace NativeSmtpClient;
 
 static const string host = "smtp.do-not-use.com"; // i.e. smtp.gmail.com
 static constexpr unsigned int port = 123; // i.e. 587 for smtp.gmail.com
 static const string user = "user@do-not-use.com";
-static const string password = "doNotUsePass";
+static const string password = "doNotUseThisPass";
 
 static const string mailFromName = "From Name";
 static const string mailFromMail = "from@do-not-use.com";
@@ -32,7 +31,8 @@ static const string mailBodyFile = "resource/Base.htm";
 
 static bool SimpleMail() {
 	SmtpClient smtpClient(host, port, user, password);
-	Mail mail({ mailFromName, mailFromMail }, { mailToName, mailToMail });
+	Mail mail(MailAddress(mailFromName, mailFromMail));
+	mail.AddRecipient(MailAddress(mailToName, mailToMail));
 	mail.Subject(subject);
 	mail.Body(mailBody);
 
@@ -46,9 +46,9 @@ static bool SimpleMail() {
 
 static bool SimpleMailWithCcBcc() {
 	SmtpClient smtpClient(host, port, user, password);
-	Mail mail({ mailFromName, mailFromMail }, { mailToName, mailToMail });
-	mail.AddCc({ ccName, ccMail });
-	mail.AddBcc({ bccName, bccMail });
+	Mail mail(MailAddress(mailFromName, mailFromMail), MailAddress(mailToName, mailToMail));
+	mail.AddCc(MailAddress(ccName, ccMail));
+	mail.AddBcc(MailAddress(bccName, bccMail));
 	mail.Subject(subject);
 	mail.Body(mailBody);
 
@@ -64,7 +64,7 @@ static bool MultipleMail() {
 	SmtpClient smtpClient(host, port, user, password);
 
 	{
-		Mail mail1({ mailFromName, mailFromMail }, { mailToName, mailToMail });
+		Mail mail1(MailAddress(mailFromName, mailFromMail), MailAddress(mailToName, mailToMail));
 		mail1.Subject(subject);
 		mail1.Body(mailBody);
 
@@ -74,7 +74,7 @@ static bool MultipleMail() {
 		}
 	}
 
-	Mail mail2({ mailFromName, mailFromMail }, { mailToName, mailToMail });
+	Mail mail2(MailAddress(mailFromName, mailFromMail), MailAddress(mailToName, mailToMail));
 	mail2.Subject(subject);
 	mail2.Body(mailBody);
 
@@ -91,7 +91,7 @@ static bool MultithreadSingleSmtpClient() {
 
 	future mailFuture = async(launch::async,
 		[&]() {
-			Mail mail1({ mailFromName, mailFromMail }, { mailToName, mailToMail });
+			Mail mail1(MailAddress(mailFromName, mailFromMail), MailAddress(mailToName, mailToMail));
 			mail1.Subject(subject);
 			mail1.BodyFromFile(mailBodyFile, true);
 
@@ -104,7 +104,7 @@ static bool MultithreadSingleSmtpClient() {
 		}
 	);
 
-	Mail mail2({ mailFromName, mailFromMail }, { mailToName, mailToMail });
+	Mail mail2(MailAddress(mailFromName, mailFromMail), MailAddress(mailToName, mailToMail));
 	mail2.Subject(subject);
 	mail2.Body(mailBody);
 
@@ -121,7 +121,7 @@ static bool MultithreadMultipleSmtpClient() {
 	future mailFuture = async(launch::async,
 		[]() {
 			SmtpClient smtpClient1(host, port, user, password);
-			Mail mail1({ mailFromName, mailFromMail }, { mailToName, mailToMail });
+			Mail mail1(MailAddress(mailFromName, mailFromMail), MailAddress(mailToName, mailToMail));
 			mail1.Subject(subject);
 			mail1.BodyFromFile(mailBodyFile, true);
 
@@ -135,7 +135,7 @@ static bool MultithreadMultipleSmtpClient() {
 	);
 
 	SmtpClient smtpClient2(host, port, user, password);
-	Mail mail2({ mailFromName, mailFromMail }, { mailToName, mailToMail });
+	Mail mail2(MailAddress(mailFromName, mailFromMail), MailAddress(mailToName, mailToMail));
 	mail2.Subject(subject);
 	mail2.Body(mailBody);
 
