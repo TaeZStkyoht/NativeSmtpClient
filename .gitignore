@@ -5,3 +5,4 @@ Release/
 build/
 *.sln
 *.vcxproj*
+.project
