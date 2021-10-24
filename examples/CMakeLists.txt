@@ -3,5 +3,7 @@ add_executable(Examples
 )
 
 target_link_libraries(Examples
-    NativeSmtpClient
+    $<TARGET_OBJECTS:NativeSmtpClient>
+    ${CMAKE_THREAD_LIBS_INIT}
+    OpenSSL::SSL
 )
