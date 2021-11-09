@@ -16,7 +16,7 @@ if(BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME} STATIC
     src/MailAddress.cpp
     src/Mail.cpp
     src/SmtpClient.cpp
